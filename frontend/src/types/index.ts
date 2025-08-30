@@ -31,3 +31,12 @@ export interface NotesResponse {
 export interface ApiError {
   error: string;
 }
+
+export interface AxiosError {
+  response?: {
+    data?: {
+      error?: string;
+    };
+  };
+  message?: string;
+}

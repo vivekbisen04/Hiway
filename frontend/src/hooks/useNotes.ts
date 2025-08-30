@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/api';
 import type { Note, NotesResponse } from '../types';
+import { getErrorMessage } from '../utils/errorHandler';
 
 export const useNotes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -13,8 +14,8 @@ export const useNotes = () => {
       const response = await api.get<NotesResponse>('/notes');
       setNotes(response.data.notes);
       setError(null);
-    } catch (error: any) {
-      setError(error.response?.data?.error || 'Failed to fetch notes');
+    } catch (error: unknown) {
+      setError(getErrorMessage(error, 'Failed to fetch notes'));
     } finally {
       setLoading(false);
     }
@@ -25,8 +26,8 @@ export const useNotes = () => {
       const response = await api.post('/notes', { title, content });
       await fetchNotes(); // Refresh the list
       return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to create note');
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error, 'Failed to create note'));
     }
   };
 
@@ -35,8 +36,8 @@ export const useNotes = () => {
       const response = await api.put(`/notes/${id}`, { title, content });
       await fetchNotes(); // Refresh the list
       return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to update note');
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error, 'Failed to update note'));
     }
   };
 
@@ -44,8 +45,8 @@ export const useNotes = () => {
     try {
       await api.delete(`/notes/${id}`);
       setNotes(notes.filter(note => note._id !== id));
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to delete note');
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error, 'Failed to delete note'));
     }
   };
 

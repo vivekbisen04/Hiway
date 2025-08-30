@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Note } from '../types';
+import { getErrorMessage } from '../utils/errorHandler';
 
 interface NoteModalProps {
   note: Note | null;
@@ -43,8 +44,8 @@ const NoteModal: React.FC<NoteModalProps> = ({ note, onSave, onClose }) => {
 
     try {
       await onSave(title.trim(), content.trim());
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError(getErrorMessage(error));
     } finally {
       setLoading(false);
     }

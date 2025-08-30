@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const VerifyOTP: React.FC = () => {
   const [otp, setOtp] = useState('');
@@ -31,8 +32,8 @@ const VerifyOTP: React.FC = () => {
     try {
       await verifyOTP(email, otp);
       navigate('/dashboard');
-    } catch (error: any) {
-      setError(error.response?.data?.error || 'Verification failed');
+    } catch (error: unknown) {
+      setError(getErrorMessage(error, 'Verification failed'));
     } finally {
       setLoading(false);
     }

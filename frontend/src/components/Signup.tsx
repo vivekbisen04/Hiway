@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -36,8 +37,8 @@ const Signup: React.FC = () => {
       setTimeout(() => {
         navigate(`/verify-otp?email=${encodeURIComponent(email)}`);
       }, 2000);
-    } catch (error: any) {
-      setError(error.response?.data?.error || 'Signup failed');
+    } catch (error: unknown) {
+      setError(getErrorMessage(error, 'Signup failed'));
     } finally {
       setLoading(false);
     }

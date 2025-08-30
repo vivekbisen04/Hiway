@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useNotes } from '../hooks/useNotes';
 import NoteCard from './NoteCard';
 import NoteModal from './NoteModal';
@@ -22,25 +22,22 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSaveNote = async (title: string, content: string) => {
-    try {
-      if (editingNote) {
-        await updateNote(editingNote._id, title, content);
-      } else {
-        await createNote(title, content);
-      }
-      setIsModalOpen(false);
-      setEditingNote(null);
-    } catch (error: any) {
-      throw error;
+    if (editingNote) {
+      await updateNote(editingNote._id, title, content);
+    } else {
+      await createNote(title, content);
     }
+    setIsModalOpen(false);
+    setEditingNote(null);
   };
 
   const handleDeleteNote = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this note?')) {
       try {
         await deleteNote(id);
-      } catch (error: any) {
-        alert(error.message);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+        alert(errorMessage);
       }
     }
   };

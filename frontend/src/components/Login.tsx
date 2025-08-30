@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -22,8 +23,8 @@ const Login: React.FC = () => {
       } else {
         navigate('/dashboard');
       }
-    } catch (error: any) {
-      setError(error.response?.data?.error || 'Login failed');
+    } catch (error: unknown) {
+      setError(getErrorMessage(error, 'Login failed'));
     } finally {
       setLoading(false);
     }
